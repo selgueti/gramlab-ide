@@ -614,6 +614,14 @@ public class GraphPathFrame extends JInternalFrame implements
             alternateOutputsButton.setEnabled(false);
             ignoreOutputsButton.setEnabled(false);
             separateOutputsButton.setSelected(true);
+            typeDictionaryGraphLabel.setEnabled(true);
+            morphologicalButton.setEnabled(true);
+            notMorphologicalButton.setEnabled(true);
+            notMorphologicalButton.setSelected(true);
+            multidelafButton.setSelected(true);
+            exploreRecButton.setSelected(true);
+            exploreRecButton.setEnabled(false);
+            exploreIndepButton.setEnabled(false);
             if (selectedGraphName.isEmpty()) {
                 outputFileName.setText("");
                 return;
@@ -623,29 +631,12 @@ public class GraphPathFrame extends JInternalFrame implements
             } else {
                 outputFileName.setText(selectedGraphName + "-paths.dic");
             }
-            typeDictionaryGraphLabel.setEnabled(true);
-            morphologicalButton.setEnabled(true);
-            notMorphologicalButton.setEnabled(true);
-            notMorphologicalButton.setSelected(true);
-            multidelafButton.setSelected(true);
-            exploreRecButton.setSelected(true);
-            exploreRecButton.setEnabled(false);
-            exploreIndepButton.setEnabled(false);
 
         }
         else {
             separateOutputsButton.setEnabled(true);
             alternateOutputsButton.setEnabled(true);
             ignoreOutputsButton.setEnabled(true);
-            if (selectedGraphName.isEmpty()) {
-                outputFileName.setText("");
-                return;
-            }
-            if (exploreRecButton.isSelected()) {
-                outputFileName.setText(selectedGraphName + "-recursive-paths.txt");
-            } else {
-                outputFileName.setText(selectedGraphName + "-paths.txt");
-            }
             typeDictionaryGraphLabel.setEnabled(false);
             morphologicalButton.setEnabled(false);
             notMorphologicalButton.setEnabled(false);
@@ -659,6 +650,15 @@ public class GraphPathFrame extends JInternalFrame implements
             multidelafButton.setSelected(true);
             exploreRecButton.setEnabled(true);
             exploreIndepButton.setEnabled(true);
+            if (selectedGraphName.isEmpty()) {
+                outputFileName.setText("");
+                return;
+            }
+            if (exploreRecButton.isSelected()) {
+                outputFileName.setText(selectedGraphName + "-recursive-paths.txt");
+            } else {
+                outputFileName.setText(selectedGraphName + "-paths.txt");
+            }
         }
     }//GEN-LAST:event_inputGraphNameActionPerformed
 

@@ -35,6 +35,7 @@ import javax.imageio.stream.ImageOutputStream;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.EmptyBorder;
@@ -407,6 +408,11 @@ public class GraphExportDialog extends JDialog {
 	}
 
 	protected void doExport() {
+		if (fldFileName.getText().isEmpty()) {
+			JOptionPane.showMessageDialog(null, "The file name should not be empty", "Error",
+					JOptionPane.ERROR_MESSAGE);
+			return;
+		}
 		DrawGraphParams params = grZone.getExportBitmapParams();
 
 		params.setScaleFactor(((Integer) fldZoom.getValue()) / 100.0);

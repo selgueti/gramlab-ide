@@ -31,23 +31,31 @@ import fr.umlv.unitex.process.commands.FlattenCommand;
 import fr.umlv.unitex.process.commands.Fst2ListCommand;
 import fr.umlv.unitex.process.commands.Grf2Fst2Command;
 import fr.umlv.unitex.process.commands.MultiCommands;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.GroupLayout;
+import javax.swing.GroupLayout.Alignment;
 import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
+import javax.swing.JRadioButton;
 import javax.swing.JTextField;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
@@ -174,6 +182,66 @@ public class GraphPathFrame extends JInternalFrame implements
         jScrollPane2 = new javax.swing.JScrollPane();
         outputArea = new fr.umlv.unitex.text.BigTextList();
         makeDicCheckBox = new javax.swing.JCheckBox();
+
+        typeDictionaryGraphButtonGroup = new javax.swing.ButtonGroup();
+        desiredOutputButtonGroup = new javax.swing.ButtonGroup();
+        typeDictionaryGraphLabel = new javax.swing.JLabel();
+        morphologicalButton = new javax.swing.JRadioButton();
+        notMorphologicalButton = new javax.swing.JRadioButton();
+        desiredOutputLabel = new javax.swing.JLabel();
+        multidelafButton = new javax.swing.JRadioButton();
+        delafButton = new javax.swing.JRadioButton();
+        configurationFileLabel = new javax.swing.JLabel();
+        configurationFileName = new javax.swing.JTextField();
+
+        typeDictionaryGraphButtonGroup.add(morphologicalButton);
+        typeDictionaryGraphButtonGroup.add(notMorphologicalButton);
+
+        desiredOutputButtonGroup.add(multidelafButton);
+        desiredOutputButtonGroup.add(delafButton);
+
+        typeDictionaryGraphLabel.setText("Type of dictionary-graph:");
+        typeDictionaryGraphLabel.setEnabled(false);
+
+        morphologicalButton.setText("Morphological");
+        morphologicalButton.setEnabled(false);
+        morphologicalButton.addActionListener(e -> morphologicalButtonActionPerformed(e));
+
+        notMorphologicalButton.setText("Not morphological");
+        notMorphologicalButton.setSelected(true);
+        notMorphologicalButton.setEnabled(false);
+        notMorphologicalButton.addActionListener(e -> notMorphologicalButtonActionPerformed(e));
+
+        desiredOutputLabel.setText("Desired output:");
+        desiredOutputLabel.setEnabled(false);
+
+        multidelafButton.setText("Multidelaf");
+        multidelafButton.setEnabled(false);
+        multidelafButton.setSelected(true);
+
+        multidelafButton.addActionListener(e -> multidelafButtonActionPerformed(e));
+
+        delafButton.setText("DELAF");
+        delafButton.setEnabled(false);
+        delafButton.addActionListener(e -> delafButtonActionPerformed(e));
+
+        configurationFileLabel.setText("Configuration file:");
+        configurationFileLabel.setEnabled(false);
+
+        String pathFileName =
+            Config.getUserCurrentLanguageDir().getAbsolutePath();
+        String defaultConfigFileName = Paths.get(pathFileName, "/Dela/multi2delafconfig.txt")
+            .toString();
+
+        configurationFileName.setText(defaultConfigFileName);
+        configurationFileName.setName(""); // NOI18N
+        configurationFileName.setPreferredSize(new java.awt.Dimension(496, 25));
+        configurationFileName.setEnabled(false);
+
+        setConfigurationFile = new javax.swing.JButton();
+        setConfigurationFile.setText("Set File");
+        setConfigurationFile.setEnabled(false);
+        setConfigurationFile.addActionListener(e -> setConfigurationFileActionPerformed(e));
 
         setClosable(true);
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -310,55 +378,102 @@ public class GraphPathFrame extends JInternalFrame implements
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(30, 30, 30)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(optionSeparator)
-                    .addComponent(optionLabel)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(graphFileLabel)
-                            .addComponent(outputFileLabel))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addComponent(outputFileName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addGap(18, 18, 18)
-                                .addComponent(setFileButton))
-                            .addComponent(inputGraphName, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(12, 12, 12)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(outputsLabel)
-                            .addComponent(exploreLabel)
-                            .addComponent(maxSeqCheckbox)
-                            .addComponent(makeDicCheckBox))
-                        .addGap(30, 30, 30)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(ignoreOutputsButton)
-                            .addComponent(exploreRecButton)
-                            .addComponent(maxSeqSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(38, 38, 38)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(exploreIndepButton)
-                            .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(separateOutputsButton)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(flattenCheckbox)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(flattenOptionButton)))
-                                .addGap(40, 40, 40)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(checkLoopsCheckbox)
-                                    .addComponent(alternateOutputsButton)))))
-                    .addComponent(resultLabel)
-                    .addComponent(resultSeparator)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(helpButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(cancelButton)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(runButton)))
+                .addGroup(
+                    layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 0,
+                            Short.MAX_VALUE)
+                        .addComponent(optionSeparator)
+                        .addComponent(optionLabel)
+                        .addGroup(layout.createSequentialGroup()
+                            .addGroup(
+                                layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(graphFileLabel)
+                                    .addComponent(outputFileLabel))
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addGroup(
+                                layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING,
+                                        false)
+                                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING,
+                                        layout.createSequentialGroup()
+                                            .addComponent(outputFileName,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                javax.swing.GroupLayout.DEFAULT_SIZE,
+                                                Short.MAX_VALUE)
+                                            .addGap(18, 18, 18)
+                                            .addComponent(setFileButton))
+                                    .addComponent(inputGraphName,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE, 682,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(244, 244, 244)
+                            .addComponent(configurationFileName)
+                            .addGap(18, 18, 18)
+                            .addComponent(setConfigurationFile))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(12, 12, 12)
+                            .addGroup(
+                                layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(outputsLabel)
+                                    .addComponent(exploreLabel)
+                                    .addComponent(maxSeqCheckbox)
+                                    .addComponent(makeDicCheckBox))
+                            .addGap(30, 30, 30)
+                            .addGroup(
+                                layout.createParallelGroup(
+                                        javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(ignoreOutputsButton)
+                                    .addComponent(exploreRecButton)
+                                    .addComponent(maxSeqSpinner,
+                                        javax.swing.GroupLayout.PREFERRED_SIZE,
+                                        61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(morphologicalButton)
+                                    .addComponent(multidelafButton)
+                            )
+                            .addGap(38, 38, 38)
+                            .addGroup(layout.createParallelGroup(
+                                    javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(exploreIndepButton)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addGroup(layout.createParallelGroup(
+                                            javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(separateOutputsButton)
+                                        .addGroup(layout.createSequentialGroup()
+                                            .addComponent(flattenCheckbox)
+                                            .addPreferredGap(
+                                                javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                            .addComponent(flattenOptionButton))
+                                        .addComponent(notMorphologicalButton)
+                                        .addComponent(delafButton)
+                                    )
+                                    .addGap(40, 40, 40)
+                                    .addGroup(layout.createParallelGroup(
+                                            javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(checkLoopsCheckbox)
+                                        .addComponent(alternateOutputsButton)))))
+                        .addComponent(resultLabel)
+                        .addComponent(resultSeparator)
+                        .addGroup(layout.createSequentialGroup()
+                            .addComponent(helpButton)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED,
+                                javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(cancelButton)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                            .addComponent(runButton))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(50)
+                            .addComponent(typeDictionaryGraphLabel))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(50)
+                            .addComponent(desiredOutputLabel))
+                        .addGroup(layout.createSequentialGroup()
+                            .addGap(50)
+                            .addComponent(configurationFileLabel))
+
+                )
                 .addContainerGap(30, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -391,13 +506,34 @@ public class GraphPathFrame extends JInternalFrame implements
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(maxSeqCheckbox)
-                    .addComponent(maxSeqSpinner, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(maxSeqSpinner, javax.swing.GroupLayout.PREFERRED_SIZE,
+                        javax.swing.GroupLayout.DEFAULT_SIZE,
+                        javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(flattenCheckbox)
                     .addComponent(flattenOptionButton)
                     .addComponent(checkLoopsCheckbox))
                 .addGap(18, 18, 18)
-		.addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                .addComponent(makeDicCheckBox))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(makeDicCheckBox))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(typeDictionaryGraphLabel)
+                    .addComponent(morphologicalButton)
+                    .addComponent(notMorphologicalButton)
+                )
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(desiredOutputLabel)
+                    .addComponent(multidelafButton)
+                    .addComponent(delafButton)
+                )
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(configurationFileLabel)
+                    .addComponent(configurationFileName)
+                    .addComponent(setConfigurationFile)
+                )
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(resultLabel)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(resultSeparator, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -474,35 +610,55 @@ public class GraphPathFrame extends JInternalFrame implements
     private void makeDicCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_inputGraphNameActionPerformed
         String selectedGraphName = getSelectedGraphName();
         if(makeDicCheckBox.isSelected()) {
-                separateOutputsButton.setEnabled(false);
-                alternateOutputsButton.setEnabled(false);
-                ignoreOutputsButton.setEnabled(false);
-                separateOutputsButton.setSelected(true);
-                if (selectedGraphName.isEmpty()) {
-                    outputFileName.setText("");
-                    return;
-                }
-            if(exploreRecButton.isSelected()) {
+            separateOutputsButton.setEnabled(false);
+            alternateOutputsButton.setEnabled(false);
+            ignoreOutputsButton.setEnabled(false);
+            separateOutputsButton.setSelected(true);
+            if (selectedGraphName.isEmpty()) {
+                outputFileName.setText("");
+                return;
+            }
+            if (exploreRecButton.isSelected()) {
                 outputFileName.setText(selectedGraphName + "-recursive-paths.dic");
+            } else {
+                outputFileName.setText(selectedGraphName + "-paths.dic");
             }
-            else {
-                outputFileName.setText(selectedGraphName+ "-paths.dic");
-            }
+            typeDictionaryGraphLabel.setEnabled(true);
+            morphologicalButton.setEnabled(true);
+            notMorphologicalButton.setEnabled(true);
+            notMorphologicalButton.setSelected(true);
+            multidelafButton.setSelected(true);
+            exploreRecButton.setSelected(true);
+            exploreRecButton.setEnabled(false);
+            exploreIndepButton.setEnabled(false);
+
         }
         else {
-                separateOutputsButton.setEnabled(true);
-                alternateOutputsButton.setEnabled(true);
-                ignoreOutputsButton.setEnabled(true);
-                if (selectedGraphName.isEmpty()) {
-                    outputFileName.setText("");
-                    return;
-                }
-            if(exploreRecButton.isSelected()) {
-                outputFileName.setText(selectedGraphName + "-recursive-paths.txt");
+            separateOutputsButton.setEnabled(true);
+            alternateOutputsButton.setEnabled(true);
+            ignoreOutputsButton.setEnabled(true);
+            if (selectedGraphName.isEmpty()) {
+                outputFileName.setText("");
+                return;
             }
-            else {
+            if (exploreRecButton.isSelected()) {
+                outputFileName.setText(selectedGraphName + "-recursive-paths.txt");
+            } else {
                 outputFileName.setText(selectedGraphName + "-paths.txt");
             }
+            typeDictionaryGraphLabel.setEnabled(false);
+            morphologicalButton.setEnabled(false);
+            notMorphologicalButton.setEnabled(false);
+            desiredOutputLabel.setEnabled(false);
+            multidelafButton.setEnabled(false);
+            delafButton.setEnabled(false);
+            configurationFileLabel.setEnabled(false);
+            configurationFileName.setEnabled(false);
+            setConfigurationFile.setEnabled(false);
+            notMorphologicalButton.setSelected(true);
+            multidelafButton.setSelected(true);
+            exploreRecButton.setEnabled(true);
+            exploreIndepButton.setEnabled(true);
         }
     }//GEN-LAST:event_inputGraphNameActionPerformed
 
@@ -541,7 +697,15 @@ public class GraphPathFrame extends JInternalFrame implements
                 cmd = cmd.noLimit();
         }
         if(makeDicCheckBox.isSelected()) {
-              cmd = cmd.makeDic();
+            cmd = cmd.makeDic();
+            if (morphologicalButton.isSelected()) {
+                cmd.element("-M");
+                if (delafButton.isSelected()) {
+                    cmd.element("-C");
+                    cmd.element(configurationFileName.getText());
+                }
+            }
+
         }
         else {
 	        if (ignoreOutputsButton.isSelected()) {
@@ -603,23 +767,79 @@ public class GraphPathFrame extends JInternalFrame implements
 
     private void flattenOptionButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_flattenOptionButtonActionPerformed
         File graphFile = new File(inputGraphName.getSelectedItem().toString());
-        Map<String,Object> flattenOptions = UnitexFrame
-                        .flattenGraph(graphFile,flattenMode,flattenDepth);
-        if( flattenOptions != null ) {
-        // unpack the commands and its options
-                preprocessCommands = (MultiCommands) flattenOptions.get("commands");
-                flattenMode = (boolean) flattenOptions.get("flattenMode");
-                flattenDepth = (String) flattenOptions.get("flattenDepth");
+        Map<String, Object> flattenOptions = UnitexFrame
+            .flattenGraph(graphFile, flattenMode, flattenDepth);
+        if (flattenOptions != null) {
+            // unpack the commands and its options
+            preprocessCommands = (MultiCommands) flattenOptions.get("commands");
+            flattenMode = (boolean) flattenOptions.get("flattenMode");
+            flattenDepth = (String) flattenOptions.get("flattenDepth");
         }
     }//GEN-LAST:event_flattenOptionButtonActionPerformed
 
-    private void checkLoopsCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkLoopsCheckboxActionPerformed
+    private void checkLoopsCheckboxActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_checkLoopsCheckboxActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_checkLoopsCheckboxActionPerformed
 
-    private void setFileButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setFileButtonActionPerformed
+    private void setFileButtonActionPerformed(
+        java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setFileButtonActionPerformed
         openOutputFile();
     }//GEN-LAST:event_setFileButtonActionPerformed
+
+    private void morphologicalButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (this.isSelected) {
+            desiredOutputLabel.setEnabled(true);
+            multidelafButton.setEnabled(true);
+            delafButton.setEnabled(true);
+            multidelafButton.setSelected(true);
+        }
+    }
+
+    private void notMorphologicalButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (this.isSelected) {
+            desiredOutputLabel.setEnabled(false);
+            multidelafButton.setEnabled(false);
+            delafButton.setEnabled(false);
+            configurationFileLabel.setEnabled(false);
+            configurationFileName.setEnabled(false);
+            setConfigurationFile.setEnabled(false);
+            multidelafButton.setSelected(true);
+        }
+    }
+
+    private void multidelafButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (this.isSelected) {
+            configurationFileLabel.setEnabled(false);
+            configurationFileName.setEnabled(false);
+            setConfigurationFile.setEnabled(false);
+        }
+    }
+
+    private void delafButtonActionPerformed(java.awt.event.ActionEvent evt) {
+        if (this.isSelected) {
+            configurationFileLabel.setEnabled(true);
+            configurationFileName.setEnabled(true);
+            setConfigurationFile.setEnabled(true);
+        }
+    }
+
+    private void setConfigurationFileActionPerformed(java.awt.event.ActionEvent evt) {
+        final int returnVal = Config.getExploreGraphOutputDialogBox().showOpenDialog(this);
+        if (returnVal != JFileChooser.APPROVE_OPTION) {
+            // we return if the user has clicked on CANCEL
+            return;
+        }
+        final String name;
+        try {
+            name = Config.getExploreGraphOutputDialogBox().getSelectedFile()
+                .getCanonicalPath();
+        } catch (final IOException e) {
+            return;
+        }
+        configurationFileName.setText(name);
+        //outputFileName.setText(name);
+    }
 
     /**
      * @param args the command line arguments
@@ -628,7 +848,7 @@ public class GraphPathFrame extends JInternalFrame implements
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
+         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
@@ -811,5 +1031,18 @@ public class GraphPathFrame extends JInternalFrame implements
     private javax.swing.JButton setFileButton;
     private javax.swing.JRadioButton separateOutputsButton;
     private javax.swing.JCheckBox makeDicCheckBox;
+
+    //Multi2Delaf
+    private javax.swing.JLabel typeDictionaryGraphLabel;
+    private javax.swing.JRadioButton morphologicalButton;
+    private javax.swing.JRadioButton notMorphologicalButton;
+    private javax.swing.JLabel desiredOutputLabel;
+    private javax.swing.JRadioButton multidelafButton;
+    private javax.swing.JRadioButton delafButton;
+    private javax.swing.JLabel configurationFileLabel;
+    private javax.swing.JTextField configurationFileName;
+    private javax.swing.JButton setConfigurationFile;
+    private javax.swing.ButtonGroup typeDictionaryGraphButtonGroup;
+    private javax.swing.ButtonGroup desiredOutputButtonGroup;
     // End of variables declaration//GEN-END:variables
 }
